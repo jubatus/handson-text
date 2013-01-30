@@ -40,8 +40,8 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = u'jubatus-handson'
-copyright = u'2013, Preferred Infrastructure'
+project = u'Jubatus ハンズオン テキスト'
+copyright = u'2013, Jubatus Team'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -103,7 +103,7 @@ html_theme = 'haiku'
 
 # The name for this set of Sphinx documents.  If None, it defaults to
 # "<project> v<release> documentation".
-#html_title = None
+html_title = project + " ver. " + release
 
 # A shorter title for the navigation bar.  Default is the same as html_title.
 #html_short_title = None
@@ -153,7 +153,7 @@ html_static_path = ['_static']
 #html_show_sphinx = True
 
 # If true, "(C) Copyright ..." is shown in the HTML footer. Default is True.
-#html_show_copyright = True
+html_show_copyright = True
 
 # If true, an OpenSearch description file will be output, and all pages will
 # contain a <link> tag referring to it.  The value of this option must be the
@@ -183,8 +183,8 @@ latex_elements = {
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title, author, documentclass [howto/manual]).
 latex_documents = [
-  ('index', 'jubatus-handson.tex', u'jubatus-handson Documentation',
-   u'Preferred Infrastructure', 'manual'),
+  ('index', 'jubatus-handson.tex', u'Jubatus ハンズオン テキスト',
+   u'Jubatus Team', 'manual'),
 ]
 
 # The name of an image file (relative to this directory) to place at the top of
