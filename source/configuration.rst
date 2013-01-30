@@ -192,6 +192,7 @@ Jubatusには様々な種類の非構造データを入れられることを目�
 
 
 ::
+
    ...
        "string_rules" : [
          { "key" : "name", "type" : "str", "sample_weight" : "bin", "global_weight" : "bin" },
