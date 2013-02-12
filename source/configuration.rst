@@ -14,7 +14,6 @@
 
 ::
 
-   TODO ディレクトリの場所確認
    $ cat /opt/jubatus/share/jubatus/example/config/classifier/pa1.json
    {
      "converter" : {
