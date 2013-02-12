@@ -15,7 +15,7 @@
 ::
 
    TODO ディレクトリの場所確認
-   $ cat /usr/local/share/jubatus/example/config/classifier/pa1.json
+   $ cat /opt/jubatus/share/jubatus/example/config/classifier/pa1.json
    {
      "converter" : {
        "string_filter_types" : {},
@@ -67,7 +67,7 @@ Jubatusでは、データが1つやってくるたびに内部状態を変える
 
 ::
 
-   $ cp /usr/local/share/jubatus/example/config/classifier/pa1.json ./my_conf.json
+   $ cp /opt/jubatus/share/jubatus/example/config/classifier/pa1.json ./my_conf.json
    $ vi my_conf.json
    $ jubaclassifier -f my_conf.json
 
@@ -158,10 +158,10 @@ Jubatusには様々な種類の非構造データを入れられることを目�
 ::
 
    {
-     "髪": "短髪",
-     "上": "Tシャツ",
-     "下": "ジーンズ",
-     "身長": 1.70
+     "hair": "short",
+     "top": "T shirt",
+     "bottom": "jeans",
+     "height": 1.70
    }
 
 上記のデータは説明のための形式なので、JSONをそのままJubatusが処理できるわけではないことには気をつけてください。
@@ -173,10 +173,10 @@ Jubatusには様々な種類の非構造データを入れられることを目�
 ::
 
    {
-     "髪=短髪": 1.0,
-     "上=Tシャツ": 1.0,
-     "下=ジーンズ": 1.0,
-     "身長": 1.70
+     "hair=short": 1.0,
+     "top=T shirt": 1.0,
+     "bottom=jeans": 1.0,
+     "height": 1.70
    }
 
 文字列に対する処理と、数値に対する処理が異なることに気づくかとおもいます。
@@ -307,7 +307,6 @@ MeCabを利用するときはプラグインとして利用する必要があり
        "method": "dynamic",
        "path": "libmecab_splitter.so",
        "function": "create",
-       "arg": "-d /usr/lib64/mecab/dic/ipadic"
      }
    },
    "string_rules" : [
