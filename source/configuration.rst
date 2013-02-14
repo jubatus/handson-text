@@ -70,7 +70,7 @@ Jubatusでは、データが1つやってくるたびに内部状態を変える
    $ vi my_conf.json
    $ jubaclassifier -f my_conf.json
 
-同様に sample.py を実行してみましょう。
+同様に ``gender.py`` を実行してみましょう。
 実行結果の幾つかが変わりました。
 
 "PA1" というのは Passive Aggressive という手法で、2003年に初めて提案されました。

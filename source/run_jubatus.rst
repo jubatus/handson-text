@@ -47,7 +47,7 @@ Jubatusの各サーバーの起動には、設定ファイルを指定する必�
 
 ::
 
-  $ jubaclassifier -f /opt/jubatus/share/jubatus/example/config/classifier/pa1.json -p 9200
+  $ jubaclassifier -f /opt/jubatus/share/jubatus/example/config/classifier/pa1.json -p 9199
 
 ``jubaclassifier`` は学習や予測のクエリ（リクエスト）を受け取るまで、起動した状態で待機します。
 
@@ -61,12 +61,14 @@ Jubatusの各サーバーの起動には、設定ファイルを指定する必�
 (TODO: URLは別のに？）
 https://gist.github.com/unnonouno/4759954
 
-このサンプルは先ほどの ``jubaclassifier`` へ学習や予測のリクエスト（クエリー）を送信します。
+このサンプルは、人の特徴情報（髪型、上半身の服装、下半身の服装、身長）の情報から、男女のいずれかを予測させるサンプルになっています。
+各特徴情報と、それがどちらの性別かがわかっているデータを使って学習を行い、性別が未知の人物の特徴情報に対して予測を行います。
+実行すると先ほどの ``jubaclassifier`` へ学習や予測のリクエスト（クエリー）を送信します。
 では、実行してみましょう。
 
 ::
 
-  % ./sample.py
+  % ./gender.py
   female 0.473417669535
   male 0.388551652431
   
@@ -191,7 +193,7 @@ Jubatusは常にクライアントオブジェクト経由で利用します。
 
 ::
 
-  % ./sample.py
+  % ./gender.py
   female -2.1826915741
   male 3.04466104507
   
@@ -223,7 +225,7 @@ Jubatusは常にクライアントオブジェクト経由で利用します。
 
 ::
 
-  % ./sample.py
+  % ./gender.py
   female (child) -0.561563551426
   male (adult) 3.46452975273
   male (child) -1.48015928268
