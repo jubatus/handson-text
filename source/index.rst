@@ -18,12 +18,3 @@ Jubatusの起動から、利用方法までを一から説明します。
    run_jubatus
    configuration
    at_last
-
-
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
-
