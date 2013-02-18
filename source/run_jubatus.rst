@@ -183,15 +183,23 @@ Jubatusは常にクライアントオブジェクト経由で利用します。
 ::
 
   train_data = [
-      ('male',   datum([('hair', 'short'), ('top', 'sweater'), ('bottom', 'jeans')], [('height', 1.70)])),
-      ('female', datum([('hair', 'long'),  ('top', 'shirt'),   ('bottom', 'skirt')], [('height', 1.56)])),
-      ('male',   datum([('hair', 'short'), ('top', 'jacket'),  ('bottom', 'chino')], [('height', 1.65)])),
-      ('female', datum([('hair', 'short'), ('top', 'T shirt'), ('bottom', 'jeans')], [('height', 1.72)])),
-      ('male',   datum([('hair', 'long'),  ('top', 'T shirt'), ('bottom', 'jeans')], [('height', 1.82)])),
-      ('female', datum([('hair', 'long'),  ('top', 'jacket'),  ('bottom', 'skirt')], [('height', 1.43)])),
+      ('male',   datum([('hair', 'short'), ('top', 'sweater'), ('bottom', 'jeans')],
+                       [('height', 1.70)])),
+      ('female', datum([('hair', 'long'),  ('top', 'shirt'),   ('bottom', 'skirt')],
+                       [('height', 1.56)])),
+      ('male',   datum([('hair', 'short'), ('top', 'jacket'),  ('bottom', 'chino')],
+                       [('height', 1.65)])),
+      ('female', datum([('hair', 'short'), ('top', 'T shirt'), ('bottom', 'jeans')],
+                       [('height', 1.72)])),
+      ('male',   datum([('hair', 'long'),  ('top', 'T shirt'), ('bottom', 'jeans')],
+                       [('height', 1.82)])),
+      ('female', datum([('hair', 'long'),  ('top', 'jacket'),  ('bottom', 'skirt')],
+                       [('height', 1.43)])),
       # 下の2行を追加
-      ('male',   datum([('hair', 'short'), ('top', 'jacket'),  ('bottom', 'jeans')], [('height', 1.76)])),
-      ('female', datum([('hair', 'long'),  ('top', 'sweater'), ('bottom', 'skirt')], [('height', 1.52)])),
+      ('male',   datum([('hair', 'short'), ('top', 'jacket'),  ('bottom', 'jeans')],
+                       [('height', 1.76)])),
+      ('female', datum([('hair', 'long'),  ('top', 'sweater'), ('bottom', 'skirt')],
+                       [('height', 1.52)])),
       ]
 
 もう一度同じようにサンプルを実行してください。
@@ -219,15 +227,23 @@ Jubatusは常にクライアントオブジェクト経由で利用します。
 ::
 
   train_data = [
-      ('male (child)',   datum([('hair', 'short'), ('top', 'sweater'), ('bottom', 'jeans')], [('height', 1.70)])),
-      ('female (adult)', datum([('hair', 'long'),  ('top', 'shirt'),   ('bottom', 'skirt')], [('height', 1.56)])),
-      ('male (child)',   datum([('hair', 'short'), ('top', 'jacket'),  ('bottom', 'chino')], [('height', 1.65)])),
-      ('female (adult)', datum([('hair', 'short'), ('top', 'T shirt'), ('bottom', 'jeans')], [('height', 1.72)])),
-      ('male (adult)',   datum([('hair', 'long'),  ('top', 'T shirt'), ('bottom', 'jeans')], [('height', 1.82)])),
-      ('female (child)', datum([('hair', 'long'),  ('top', 'jacket'),  ('bottom', 'skirt')], [('height', 1.43)])),
-      ('male (adult)',   datum([('hair', 'short'), ('top', 'jacket'),  ('bottom', 'jeans')], [('height', 1.76)])),
-      ('female (child)', datum([('hair', 'long'),  ('top', 'sweater'), ('bottom', 'skirt')], [('height', 1.52)])),
-      ]
+    ('male (child)',   datum([('hair', 'short'), ('top', 'sweater'), ('bottom', 'jeans')],
+                             [('height', 1.70)])),
+    ('female (adult)', datum([('hair', 'long'),  ('top', 'shirt'),   ('bottom', 'skirt')],
+                             [('height', 1.56)])),
+    ('male (child)',   datum([('hair', 'short'), ('top', 'jacket'),  ('bottom', 'chino')],
+                             [('height', 1.65)])),
+    ('female (adult)', datum([('hair', 'short'), ('top', 'T shirt'), ('bottom', 'jeans')],
+                             [('height', 1.72)])),
+    ('male (adult)',   datum([('hair', 'long'),  ('top', 'T shirt'), ('bottom', 'jeans')],
+                             [('height', 1.82)])),
+    ('female (child)', datum([('hair', 'long'),  ('top', 'jacket'),  ('bottom', 'skirt')],
+                             [('height', 1.43)])),
+    ('male (adult)',   datum([('hair', 'short'), ('top', 'jacket'),  ('bottom', 'jeans')],
+                             [('height', 1.76)])),
+    ('female (child)', datum([('hair', 'long'),  ('top', 'sweater'), ('bottom', 'skirt')],
+                             [('height', 1.52)])),
+    ]
 
 先程と同様に実行してみましょう。
 

@@ -259,8 +259,10 @@ typeの中に重み付けの方法も含まれるため、こちらの設定は�
 
    ...
        "string_rules" : [
-         { "key" : "name", "type" : "str", "sample_weight" : "bin", "global_weight" : "bin" },
-         { "key" : "address", "type" : "space", "sample_weight" : "bin", "global_weight" : "bin" }
+         { "key" : "name", "type" : "str",
+           "sample_weight" : "bin", "global_weight" : "bin" },
+         { "key" : "address", "type" : "space",
+           "sample_weight" : "bin", "global_weight" : "bin" }
        ],
    ...
 
