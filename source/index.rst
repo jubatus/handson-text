@@ -17,6 +17,7 @@ Jubatusの起動から、利用方法までを一から説明します。
    intro
    run_jubatus
    configuration
+   at_last
 
 
 Indices and tables
