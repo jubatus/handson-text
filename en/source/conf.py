@@ -40,7 +40,7 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = u'Jubatus ハンズオン テキスト'
+project = u'Jubatus Hands-on Text'
 copyright = u'2013, Jubatus Team'
 
 # The version info for the project you're documenting, acts as replacement for
@@ -183,7 +183,7 @@ latex_elements = {
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title, author, documentclass [howto/manual]).
 latex_documents = [
-  ('index', 'jubatus-handson.tex', u'Jubatus ハンズオン テキスト',
+  ('index', 'jubatus-handson.tex', u'Jubatus Hands-on Text',
    u'Jubatus Team', 'manual'),
 ]
 
@@ -242,5 +242,5 @@ texinfo_documents = [
 #texinfo_show_urls = 'footnote'
 
 # These lines are automatically inserted for Japanese document
-language = 'ja'
+language = 'en'
 latex_docclass = {'manual': 'jsbook'}
