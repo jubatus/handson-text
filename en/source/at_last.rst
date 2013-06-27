@@ -1,40 +1,41 @@
 ==========
- おわりに
+Conclusion
 ==========
 
-その他の情報源
-==============
+References
+==========
 
-インターネットを通じて、様々な情報を発信しているのでそちらを参照してください。
+The Jubatus developing team are actively publishing useful information and tips on the Internet.
 
-ドキュメント
-  - http://jubat.us/ja
-  - 特徴抽出や設定の書き方、クライアントAPIリファレンス、参照論文などの情報が載っています
+Official Web Document
+  - http://jubat.us/en
+  - Details of algorithms, feature value extraction, configuration, and technical references
 
-メーリングリスト
+Mailing list
   - http://groups.google.com/group/jubatus
 
-ソースとバグ報告
+Source code & bug report
   - https://github.com/jubatus
 
-Blog
+Blog (currently in Japanese only)
   - http://blog.jubat.us/
 
-その他
-  - Twitter: @JubatusOfficial
-  - その他、開発メンバー宛につぶやいていただければ返信します
+Others
+  - Twitter: @JubatusOfficial (in Japanese)
+  - You can also find some Jubatus developers on Twitter
 
 
-お試し用実験データなど
+Examples and datasets
 ======================
 
-その他、jubatus-example 以下に幾つかサンプルがあるので試してみるのも良いでしょう。
-但し、サポートしている言語は多くないが、今後サンプル数とともに増やしていくつもりです。
+We have *jubatus-example* repository that includes many tasks with each languages.
+It is also a nice starting point to learn how to use Jubatus.
 
   https://github.com/jubatus/jubatus-example
 
-サンプル用途のデータセットは検索すると比較的見つけることができます。
-特に有名なのは libsvm のサイトにあるデータセットです。
-これらを使って遊んでみるのも、最初の取り組みとしてはよいでしょう。
+If you are looking for datasets for making some testing examples,
+A lot of data repositories are available online.
+One example is on the LIBSVM Web site.
+You can find many kinds of easy-to-use datasets there.
 
   http://www.csie.ntu.edu.tw/~cjlin/libsvmtools/datasets/
