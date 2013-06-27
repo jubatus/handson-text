@@ -1,16 +1,16 @@
 ====================
- 設定を変更してみる
+Change Configuration
 ====================
 
-``jubaclassifier`` を起動する際に、 ``-f`` オプションで設定ファイルを渡したのを覚えているでしょうか。
-起動時の設定には、どのような学習を行うか、どのようなパラメータ設定で行うかなどの重要なチューニングポイントが隠れています。
-次に、この設定を修正することで機械学習のチューニングを行います。
+Do you remember that you set the ``-f`` option when starting ``jubaclassifier``?
+At the point, you also have change a lot of other setting parameters, which are very important for specifying used algorithms and performance tuning.
+Next we would like to introduce how to change it.
 
 
-設定を見てみる
-==============
+See configuration
+=================
 
-まずは設定ファイルの全体像をみてみましょう。
+Let's look into the configuration file that we used in the previous section, ``pa1.json``.
 
 ::
 
@@ -36,33 +36,32 @@
      "method" : "PA1"
    }
 
-長くてよくわかりませんね。
-Jubatusの全てのサーバーの設定ファイルは、単一のJSONフォーマットです。
-Jubatusの機械学習器としての振る舞いは、この中で設定されています。
+
+Hard to get it at first sight, isn't it?
+We use a type of JSON file for each server program in Jubatus.
+Every setting to declare how the machine learning algorithm works is defined inside the JSON file.
+On the top level, the configuration file has three major components.
 
 .. csv-table::
-   :header: "フィールド名", "説明"
+   :header: "Field name" "Explanation"
 
-   converter, 特徴変換の方法を指定します。
-   parameter, 学習アルゴリズムに渡すパラメータを指定します。
-   method, 利用する学習アルゴリズム名を指定します。
+   converter, Defines how to pre-process input data
+   parameter, Specifies the parameters for machine learning algorithm
+   method, Indicates which algorithm to use
 
-それぞれのパラメータを変更しながら、その役割を順番に説明していきます。
-フォーマットの関係で順序が前後しますが、下から順番に解説します。
-
-また、各設定項目の詳細は、 `ドキュメント <http://jubat.us/ja/api_classifier.html>`_ を参照してください。
+We will explain each of them by changing the values, from bottom to top.
+Note that the details are available on the `Web <http://jubat.us/ja/api_classifier.html>`_ .
 
 
-学習アルゴリズムを変えてみる
-============================
+Change algorithm
+================
 
-教師付きデータがやってきた時に、機械学習の内部状態をどのように変更するのかを決めるのが学習アルゴリズムです。
-Jubatusでは、データが1つやってくるたびに内部状態を変える、 *オンライン学習* という方式のアルゴリズムをサポートしています。
+Every machine learning algorithm is responsible for building a prediction model and determining how to update the model when receiving training samples.
+Jubatus is specialized for a type of machine learning algorithm named *online learning*, of which aim is to update the model each time when receiving a training sample one-by-one.
 
-設定ファイルの中では、 ``method`` の項目が学習アルゴリズムを指定しています。
-まずはサンプルの設定を適当なディレクトリにコピーしてきましょう。
-ここから、この設定ファイルをいじっていきます。
-最初の設定では "PA1" という手法をとっていましたが、これを "AROW" に変えてみましょう。
+In the configuration file, ``method`` component defines which algorithm to use.
+For trying to change it, copy the sample configuration file to an arbitrary directory.
+First we change the value of ``method`` from "PA1" to "AROW".
 
 ::
 
@@ -70,35 +69,36 @@ Jubatusでは、データが1つやってくるたびに内部状態を変える
    $ vi my_conf.json
    $ jubaclassifier -f my_conf.json
 
-同様に ``gender.py`` を実行してみましょう。
-実行結果の幾つかが変わりました。
+Then run ``gender.pyy``. The output must be slightly different.
 
-"PA1" というのは Passive Aggressive という手法で、2003年に初めて提案されました。
-また、 "AROW" は Adaptive Regularization of Weight Vectors という手法で、2009年に提案されました。
-機械学習のアルゴリズム自体は年々進歩しています。
-両者は問題設定こそ同じですが、学習効率の向上やノイズデータへの耐性向上を果たしています。
-もちろん両者のアルゴリズムの複雑性は違い、概ね新しいアルゴリズムのほうが複雑担っています。
-
-その他にも NHERD や CW などの手法も利用できますが、詳細はドキュメントに譲ります。
-他の手法も試して、精度にどのような影響があるのか確認するのも良いでしょう。
-なお、利用するアルゴリズムは実行途中で変えることができません。
+"PA1" stands for the Passive-Aggressive algorithm, proposed in 2003.
+"AROW" is a newer algorithm, "Adaptive Regularization of Weight Vectors", proposed in 2009.
+We have seen substantial progress each year in machine learning algorithms for decades.
+Though "PA1" and "AROW" are both for classification problems, "AROW" contains improvements in learning efficiency and robustness against noisy data.
+On the other hand, "PA1" is faster than "AROW" given the same amount of training samples, as better algorithm tends to be more complex.
 
 
-パラメータを変えてみる
-======================
+Jubatus is also equipped with other famous classification algorithms such as "NHERD" and "CW", though we refer interested users to the documents on the Web.
+It would be nice to try them and to evaluate how the performance is difference between the algorithms.
+Note that the algorithm cannot be changed during running ``jubaclassifier``.
 
-一般に、学習アルゴリズムは内部に大量の（数万、数十万という様なオーダー）パラメータを持っており、教師データにもとづいてこれを調整します。
-しかし、多くのアルゴリズムはこれとは別に、学習前にパラメータを渡します。
-この学習前に与えるパラメータは、どのくらい積極的に学習するかなど、学習自体の制御に使われます。
-教師データを使って調整されないため、自動調整されるパラメータとは区別されて *ハイパーパラメータ* と呼ばれることもあります。
 
-ハイパーパラメータの役割はいくつかありますが、現在分類器にあるハイパーパラメータは大雑把に言うとデータに対する感度の意味合いを持っています。
-感度が高いと、学習は早く進む代わりにノイズに弱くなります。
-一方、感度が低いと、学習が遅くなる代わりにノイズに負けなくなります。
-このトレードオフの調整は難しく、実験的に良い塩梅のパラーメータを探ることがよく行なわれます。
+Change parameter
+================
 
-では、ハイパーパラメータを上下させてみましょう
-設定ファイルの ``regularization_weight`` を変えて実行してみましょう。
+Machine learning algorithm corresponds to a prediction model having a large number of model parameters, and they will be controlled based on given training data.
+On the other hand, there are also a few configuration parameters that are specified in the configuration file in advance of training.
+They control the each process in the training phase, for example, how aggressively the algorithms update the current model for each time.
+These parameters are often called as *hyper-parameters* since they are unchanged by training, unlike the model parameters.
+
+Hyper-parameters can have many roles in general.
+Those of ``jubaclassifier`` roughly represent the sensitivity of algorithm to a training sample.
+Higher sensitivity makes the model training faster but less robust to noisy sample.
+Conversely, lower sensitivity leads to slower and more robust training.
+The trade-off between them cannot be tuned in advance, so it used to be empirically selected using real samples by changing the hyper-parameters.
+
+OK, then let's do that by yourself.
+First we modify the value of ``regularization_weight`` and run the example.
 
 ::
 
@@ -108,46 +108,39 @@ Jubatusでは、データが1つやってくるたびに内部状態を変える
    },
    ...
 
-この状態で実行すると、結果が変わります。
-だいたい、10倍ごとぐらいの粗い粒度で試すことが多いです。
 
-適切なハイパーパラメータはデータの種類やデータの量によっても変わります。
-また、ハイパーパラメータも自動で調整する様な手法もあるのですが、Jubatusにはまだ実装されていません。
+It is necessary to increase or decrease the value of ``regularization_weight`` by order of 10 to search for the best value.
+The current version of Jubatus does not have any capability to automatically choose the best value by model selection techniques.
 
+Change feature value
+====================
 
-特徴抽出の設定を変えてみる
-==========================
+The remaining part in configuration is ``converter``, which is the most important.
+We would like to describe it in more detail since the success of predictive analytics using Jubatus strongly depends on the converter of feature values.
 
-残りの設定、すなわち ``converter`` の部分は特徴抽出の設定です。
-この部分が、設定の中で一番大きいです。
-特徴抽出は解析がうまくいくかどうかを左右する非常に重要なポイントなので詳しく説明します。
+Machine learning algorithms cannot directly deal with raw data in the real-world application, such as documents in text analytics, nor images in computer vision.
+Instead, they only uses a set of feature values, which are often represented as numerical feature vectors of fixed size.
+So, how to apply machine learning techniques to complex raw data in such applications?
+Feature extraction (or feature convert) is the intermediate process, to transform raw data into feature vectors.
+Depending on the raw input data and the machine learning algorithm, a pre-defined format of feature vectors will be extracted and used in the following training phase.
+Since most of the machine learning algorithms assume vectors as input, they can work given them, no matter what is the original raw data, documents or pictures.
 
-一般的に、機械学習の技術は入力データとしてテキストや画像といった生の情報を扱いません。
-普通は数値情報に落ちた、ベクトルの形式のデータを扱うことがほとんどです。
-では、どうやって文や画像、行動履歴などのデータを扱うのでしょう？
-この間に入るのが特徴抽出（あるいは特徴変換）といわれる処理です。
-入力データと解析対象に応じて、入力データの生の文や画像はベクトル形式に変換されます。
-機械学習技術の多くがベクトルデータを入力として仮定しているため、一度ベクトルデータに変換してしまえば元々の入力が文であっても画像であっても同じように処理ができます。
-
-普通の機械学習ライブラリではこの特徴抽出の仕組を備えていません。
-そのため、ユーザーは特徴抽出処理を自分で書かなければなりませんでした。
-Jubatusではこの特徴抽出処理の仕組みも備えているため、ユーザーは生のデータを直接Jubatusに入力しても機械学習を利用できるのです。
+Machine learning libraries tend to be lack of this feature extraction module.
+Therefore, it is up to users to write the feature value costruction logic as pre-processing before sending them to the libraries.
+In contrast, Jubatus has a built-in feature value converter on the server side, so that users can directly input raw data and run machine learning algorithms in Jubatus.
 
 
-デフォルトの設定の解説
-----------------------
+Default configuration
+---------------------
 
-デフォルトの設定を見ながら、どのような処理がなされるか解説します。
-処理の流れの概要が頭のなかに入っていたほうが、残りの理解が進むでしょう。
+For making it easier to understand how to change, we will explain what kind of configuration is used in ``jubaclassifier``, by going through the default configuration settings.
 
-まず、Jubatusへの入力データについてです。
-Jubatusには様々な種類の非構造データを入れられることを目指してはいますが、現状では2種類のデータしか扱えません。
-1つは文書などを始めとする文字列です。
-もう1つはセンサーのデータなどの数値情報です。
-これは、先の説明で ``datum`` という型が受け取る2種類のリストに対応しています。
-両者に必要な特徴抽出処理は異なるため、全く別の系統で処理が行われます。
 
-例として、以下の様な情報がやってくると仮定します。
+Speaking of input data to Jubatus, though Jubatus is originally designed for handling any kinds of raw unstructured data, currently only two types, symbol sequences such as strings, and numeric values such as sensor data, are supported.
+These values correspond to the two list given to a ``datum`` object.
+They will be separately processed in the following feature value extraction.
+
+For instance, let us assume that the following information is given as input.
 
 ::
 
@@ -158,11 +151,14 @@ Jubatusには様々な種類の非構造データを入れられることを目�
      "height": 1.70
    }
 
-上記のデータは説明のための形式なので、JSONをそのままJubatusが処理できるわけではないことには気をつけてください。
-さて、機械学習でデータを扱うには、裏ではベクトル形式に変換しなければなりません。
-普通ベクトルといえば、 (1.5, 2.3, 4.2) の様に数値の列で表されますが、ここではベクトルの次元とその値のペアの集合であらわします。
-内部的にはもっとたくさんの次元があって、明記されない次元は 0 であるとして処理します。
-上の文字列情報を含んだデータを単純にベクトル化してみます。
+
+Note that this JSON format is just for explanation, so Jubatus cannot handle it.
+
+Now, we have to convert it into a numerical vector.
+It used to be represented as a sequence of numerical values, such as (1.5, 2.3, 4.2), but we use a set of pairs of dimension keys and values.
+There would be many other dimensions with zero values, but we assume that they are omitted in this format.
+
+A result of simple vectorization is as follows.
 
 ::
 
@@ -173,12 +169,11 @@ Jubatusには様々な種類の非構造データを入れられることを目�
      "height": 1.70
    }
 
-文字列に対する処理と、数値に対する処理が異なることに気づくかとおもいます。
-順に説明します。
+You can see that different processes have been applied to strings and values. 
 
-文字列に対する処理は、統計学でいうところの質的変数をダミー変数に変える処理を行なっているということです。
-この変換規則を記述しているのが、Jubatusの特徴変換の設定中の ``string_rules`` になります。
-デフォルトの設定ではどうなっているでしょうか。
+The process to strings can be regarded as a transformation from a nominal value to a value of dummy variable.
+This rule is defined inside ``string_rules`` in the configuration.
+Let's look at the default setting for it.
 
 ::
 
@@ -188,21 +183,19 @@ Jubatusには様々な種類の非構造データを入れられることを目�
        ],
    ...
 
-この設定がいわんとしていることは、以下の4つです。
+These three lines just indicates the following four settings.
 
-1. key: "*" は全てのキーの情報に対して処理するという意味です。
-2. type: "str" は文字列情報をそのまま1つの次元とするという意味です。
-3. sample_weight: "bin" は重みを1.0にするという意味です。
-4. global_weight: "bin" は重みを1.0にするという意味です。
+1. 'key: "*"' means this rule is applied to all of the input variable with any variable IDs (keys).
+2. 'type: "str"' means each of the variables will be dealt with as string-type and correspond to one dimension in feature vector.
+3. 'sample_weight: "bin"' means each value in feature vector will have binary value (1.0).
+4. 'global_weight: "bin"' also means the global weight for these feature values will be 1.0.
 
-keyの値でマッチした入力データに対して、typeで指定した特徴抽出を行うということです。
-残りの2つは重み付けの方法です。
-sample_weightはデータ中の出現回数情報をどう使うかで、"bin" なら出現すれば 1 しなければ 0 とします。
-global_weightはデータ中の出現回数以外の情報での重み付けで、"bin"なら常に1です。
-実際のベクトルの値はsample_weightとglobal_weightの積で求めます（結果的に1.0になります）。
+This rule generally shows how to extract feature values using a method specified with "type" from a subset of input variables that are matched with "key".
+"sample_weight" means that the feature value will be 1.0 if the "type" method matches at least once in the input variable, and 0.0 otherwise.
+The final feature values will be the multiplication of "sample_weight" and "global_weight", so in this case, 1.0 or 0.0.
 
-数値情報である身長はどのように処理されているでしょう。
-こちらの変換規則は ``num_rules`` に記述されています。
+Let's look at how to handle numerical information such as height.
+The configuration has ``num_rules`` component as follows.
 
 ::
 
@@ -212,48 +205,44 @@ global_weightはデータ中の出現回数以外の情報での重み付けで�
     ]
   ...
 
-これも先と同様です。
+This rule is much simpler.
 
-1. key: "*" は全てのキーの情報に対して処理するという意味です。
-2. type: "num" は数値情報をそのままの値として利用するという意味です。
+1. 'key: "*"' means this rule is applied to all of the input variable with any variable IDs (keys).
+2. 'type: "num"' means each of the variables will be dealt with as numerical-type and its raw value will be used in feature vector.
 
-typeの中に重み付けの方法も含まれるため、こちらの設定はシンプルです。
-上記の設定ですと、与えられた1.70という数値がそのままベクトル情報になります。
+The input value 1.70 will be contained in the feature vector as-is.
 
-
-以上の特徴抽出ルールを工夫すると、元データの異なる側面を捉えられるようになります。
-次は特徴の取り方の工夫をします。
+By modifying these rules, feature vectors can seize many different aspects of raw input variables.
 
 
-特徴の取り方を工夫する
-----------------------
+Tricks in feature extraction
+----------------------------
 
-特徴抽出を工夫する例として、より多くの情報が入っている場合の例を示します。
-住所の情報は非常に細かくなっています。
-
+We will show an example of how to extract a value that you interested in as feature value.
+The following is just a pair of name and address of a person.
 ::
 
    {
-     "名前": "山田 太郎",
-     "住所": "東京都 文京区 本郷"
+     "name": "David Johnson",
+     "address": "GatewayPlace SanJose CA"
    }
 
-このままですと、住所の情報は粒度が細かすぎます。
-例えば「"東京"に住んでいる人は若者が多い」のような、もう少し粒度の粗い情報で学習したくなります。
-つまり、以下の様な形に変換したくなります。
+For the analysis point of view, this representation of address has too small granularity to compute some statistics.
+Instead, you might want to make groups of living people in level of "SanJose" or "CA".
+In other words, the following lines look exactly the needed information.
 
 ::
 
   {
-    "名前=山田 太郎": 1.0,
-    "住所=東京都": 1.0,
-    "住所=文京区": 1.0
-    "住所=本郷": 1.0
+    "name=David Johnson": 1.0,
+    "address=GatewayPlace" : 1.0,
+    "address=SanJose": 1.0,
+    "address=CA": 1.0
   }
 
-そこで、 ``情報`` の情報をスペース区切りにしてみましょう。
-先ほど解説した通り、どの特徴抽出処理をするか指定するのが、 ``string_rules`` でした。
-``string_rules`` に、スペース区切りで特徴抽出する ``space`` の規則を追加します。
+Then let's try to extract indivisual terms in ``address`` by separating with whitespace.
+As meantioned earlier, we can use ``string_rules`` to specify such rule.
+So we append a new subrule for whitespace separation in it, named ``space`` as follows.
 
 ::
 
@@ -266,34 +255,35 @@ typeの中に重み付けの方法も含まれるため、こちらの設定は�
        ],
    ...
 
-抽出規則を ``str`` から ``space`` に変更したところに注目してください。
-さて実行してみましょう。
-もともとの変換ですと、「"東京都 文京区 本郷"の人は若者が多い」という様な、粒度の細かい学習しか出来ませんでした。
-この変更の効果は、「"東京都"の人は若者が多い」という、もう少し大雑把な粒度の情報も学習できるようになります。
+Note that new subrule has the type name ``space`` instead of ``str``.
+Then, just run it.
+In the previous output you can see that David as a person living in "Gateway Place, San Jose, CA".
+Now David is a person who lives "Gateway Place", "San Jose", and "CA".
+This really helps how the following learning task works depending on arbitrary abstraction level of the address.
 
-特徴抽出の基本的な考え方は、細かい粒度で特徴を取るか、粗い粒度で特徴を取るのかの調整です。
-細かく取るほど、細かい違いを学習できる可能性が高まりますが、大きな傾向は捉えられなくなり、結果的に必要な教師データの数が増えます。
-逆に、粗い粒度の情報だけ使うと全体の傾向がすぐに学習される変わりに、細かい違いに鈍感になります。
-どちらが良いかはアプリケーションやデータによって異なるため一概には言えませんが、自然言語の場合は概ね単語くらいの単位が経験的にはよく機能しています。
-実際には、単語の共起など更に複雑な特徴を利用する場合もありますが、今回は割愛します。
+In a similar manner, you can regard the feature extraction method as an control of abstraction levels on the raw input.
+More precise the abstraction level of feature vector becomes, trained model can be more sensitive to small difference but also it requires more training data to learn.
+In contrast, less precise the abstraction level is, trained model can be easily learned, but it cannot distinguish small difference in the raw input.
+That means there is a trade-off.
+Though it depends on the application or data, for example, applications with text documents can empirically go well with the level of word (not the characters), as we did above.
+We omit the more complex examples using the co-occurrence of words in this tutorial.
 
 
-プラグインを利用する
---------------------
+Use plug-ins
+------------
 
-今回は、スペース区切りで特徴を使う場合だけ試しました。
-複雑な設定もたくさんありますが、もう1つだけ紹介して残りはドキュメントに譲ります。
+In addition to the example for whitespace segmentation, we would like to show another configuration.
+Note that others can be found on the official Web document.
 
-自由文でデータが与えられると、スペースで区切っても適切な特徴は取れません。
-そこで利用するのが自然言語処理技術です。
-特にここで利用するのが、形態素解析と呼ばれる技術で、大雑把には文を単語の列に分解する技術です。
-JubatusではオープンソースのMeCabという形態素解析器を使って入力文を単語に分割します。
-ちなみにMeCabの中でも機械学習技術は応用されています。
+Given a natural language text, you cannot extract good features with whitespace segmentation.
+Instead, we use natural language processing, which is a built-in capability of Jubatus.
+Morphological analysis, which breaks a sentence into a sequence of words, used to be the most important part, 
+and Jubatus is equipped with MeCab, a widely used open source software for it.
 
-設定の書き方は少し複雑です。
-MeCabを利用するときはプラグインとして利用する必要があります。
-プラグインのロードは、 ``string_types`` の項でプラグインの読み込み方法を記述して、読み込んだプラグインの適用ルールを ``string_rules`` で記述する寸法です。
-以下に例を書きます。
+
+The configuration rule is slightly more complex.
+First, you have to use MeCab as a plug-in, which can be loaded as follows.
+``string_types`` shows how to load the plug-in, and ``string_rules`` defines how to apply it to input data.
 
 ::
 
@@ -311,14 +301,14 @@ MeCabを利用するときはプラグインとして利用する必要があり
    ...
 
 
-プラグインは自作することもできるので、興味のある方は自作にもチャレンジしてください。
+You can also build your own plug-in as an external library like this. Let's try if you are interested in other time.
 
 
-数値データや他の設定の仕方
---------------------------
+For numerical data and others
+-----------------------------
 
-数値データの扱いも、先程までの設定の ``string`` を ``num`` に変えるとほぼ同じように設定出来ます。
-詳細はドキュメントに譲りますが、こちらも色々な設定で精度が変わってきます。
+Configuration for handling numerical values is also very important for performance tuning.
+It is also most the same for numerical input data to change configurations by replacing ``string`` with ``num``.
+Please refer to the official Web.
 
-他に、今回は解説しませんが特徴抽出の前に要らない情報を除去するなどのフィルター処理などを行うこともできます。
-例えばHTMLタグを除去したり、定型フォーマットの箇所を削除するなどの用途に使えます。
+Other capabilities of configuration include filtering, to remove unnecessary information from the raw data such as tags in HTML documents, or redundant characters in certain types of templates.
