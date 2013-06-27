@@ -40,7 +40,7 @@ The above example with two classes YES and NO is called binary classification pr
 "Spam or ham?", "Male or female?", "Clicked or ignored?", these decisions can be all recognized as a sort of binary classification problem.
 
 When having more than two classes, it is called multiclass classification problem.
-For example, the task belongs to it to wacth a picture of dishes and predict them as french, italian, or chinese.
+For example, whan the goal of a task is to watch a picture of dishes and predict them as French, Italian, or Chinese, it belongs to multiclass classification problems.
 The classifier in Jubatus can address the multiclass classification problems, which is a generalization of binary case.
 The purpose of this tutorial is to learn how to use the Jubatus' classifier (jubaclassifier).
 
@@ -53,12 +53,12 @@ Not only classification, it also supports other machine learning tasks such as r
 
 The main advantage is that Jubatus can work in a distributed environment.
 We often have a too large amount of data for machine learning problems.
-Jubatus is designed to make the algorithm computation distributed among multiple servers so that it can ahieve scale-out for higher throughput by adding more servers.
+Jubatus is designed to make the algorithm computation distributed among multiple servers so that it can achieve scale-out for higher throughput by adding more servers.
 Though this tutorial do not cover the distributed running, please see and try the examples on the official Web or github.com if you are interested.
 
 The another feature of Jubatus is that it focuses on *online learning* in machine learning algorithms.
-Typically, training of machine learning models started after all of the traning samples are collected and stored in a place (batch learning).
-Recently, on the other hand, many efforts have beed done for online learning, which is to receive and process each traning sample without storing them.
+Typically, training of machine learning models started after all of the training samples are collected and stored in a place (batch learning).
+Recently, on the other hand, many efforts have been done for online learning, which is to receive and process each training sample without storing them.
 That's the difference between batch and online learning algorithms.
 Though special case for online learning is not required in this tutorial, you might realize its advantage in the future.
 
