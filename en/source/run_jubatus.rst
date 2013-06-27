@@ -1,21 +1,20 @@
-=====================
- Jubatusを使ってみる
-=====================
+===================
+ How to use Jubatus
+===================
 
-まずはJubatusを起動して、実際にデータを流すところまで手を動かしてみましょう。
-サンプルソースを読み解きながら、どのように使えば良いのかを解説します。
+We will show you how to start and put data into Jubatus, using an example of source code.
 
 
-Jubatusを起動する
-=================
+Starting Jubatus
+================
 
-ではJubatusを起動します。
-先ほど説明した通り、Jubatusは複数の機械学習器を持っています。
-今日使うのは、分類器(classifier)です。
-Jubatusは機械学習器ごとに異なるコマンドで起動します。
-分類器は ``jubaclassifier`` コマンドです。
+First, we start running Jubatus.
+As we described in the previous section, Jubatus has a set of learners for machine learning tasks.
+This time we will use the classifier for classification problem.
+For each learner, Jubatus provides different command to start.
+Classifier will be run with ``jubaclassifier``.
 
-分類器を起動してみましょう。
+Here is the simple command to run it.
 
 ::
 
@@ -25,8 +24,8 @@ Jubatusは機械学習器ごとに異なるコマンドで起動します。
   options:
   ... [略]
 
-Jubatusの各サーバーの起動には、設定ファイルを指定する必要があります。
-ターミナルから以下のコマンドを叩いてみてください。
+Oops, you need to specify an option.
+Run the following command again on your terminal.
 
 ::
 
@@ -34,41 +33,42 @@ Jubatusの各サーバーの起動には、設定ファイルを指定する必�
 
 .. note::
 
-   0.4.0以前までは、起動後に設定を読み込ませていましたが、0.4.0以降では起動時に指定する必要があります。
+   For the older versions of Jubatus than 0.4.0, configuration file is given after started. For later versions, you need it at the start.
+
+The path for option ``-f`` is to a configuration file.
+``/opt/jubtus/share/jubatus/`` is the installation path of Jubatus and you have a sample configuration file ``pa1.json`` under it for ``jubaclassifier``.
+We will explain what is in the configuration in the next section.
+If you have any error message after this command, Jubatus has started successfully. Congratulations!
 
 
-``-f`` で指定しているのは設定ファイルです。
-デフォルトでサンプルの設定が配布されているので、そのサンプル設定を読み込ませています。
-設定に関しては、次の章で解説します。
-上記のコマンドでエラーが表示されなければjubaclassifierが起動しています。
+If it fails, the most possible cause is that other process already occupies the same port, of which default value for ``jubaclassifier`` is 9199.
+To change the port number, use option ``-p``.
 
-起動しなかった場合は、別のプロセスが同じポートを利用している可能性があります。
-利用するポートを変えるときは、 ``-p`` オプションを指定します。
 
 ::
 
-  $ jubaclassifier -f /opt/jubatus/share/jubatus/example/config/classifier/pa1.json -p 9199
-
-``jubaclassifier`` は学習や予測のクエリ（リクエスト）を受け取るまで、起動した状態で待機します。
+  $ jubaclassifier -f /opt/jubatus/share/jubatus/example/config/classifier/pa1.json -p 19199
 
 
-サンプルを実行する
-==================
+Now ``jubaclassifier`` is running and waiting for queries (requests) of training or prediction from clients.
 
-``jubaclassifier`` が起動した状態で、サンプルプログラムを実行してみます。
-Jubatusを利用したサンプルアプリケーションを jubatus-example というプロジェクト下で公開しています。
+
+Try example
+===========
+
+Next we will run an example of client program to send queries to the running ``jubaclassifier``.
+A set of Jubatus examples have been released under the ``jubatus-example`` repository on Github.
 
 https://github.com/jubatus/jubatus-example
 
-今回はこの中から最も簡単なサンプルである性別推定（gender）を使います。
-配布したVMでは、 ``~/jubatus-example/gender`` にあります。
-このサンプルは、人の特徴情報（髪型、上半身の服装、下半身の服装、身長）の情報から、男女のいずれかを予測させるサンプルになっています。
-各特徴情報と、それがどちらの性別かがわかっているデータを使って学習を行い、性別が未知の人物の特徴情報に対して予測を行います。
-実行すると先ほどの ``jubaclassifier`` へ学習や予測のリクエスト（クエリー）を送信します。
-では、実行してみましょう。
-以降の説明では、 Python の例を利用する前提で書いていきますが、それ以外の言語のサンプルを利用しても説明は概ね同じです。
-C++やJavaの場合は、ビルドしてから利用してください。
-先ほど起動させたサーバーと、これから起動させるクライアントの2つを動かす必要があるので、サーバーをバックグラウンドジョブで動かすなどしてください。
+From the repository, we choose the simplest one, gender estimation.
+In the VM environment, you have the codes under the directory ``~/jubatus-example/gender``.
+The task of this example is to estimate the gender of a person based on his/her profile, such as hair-style, uppder body cloth, lower body cloth, and height.
+We train a classifier by using a training set of people of which gender information are given.
+When running the example script, the queries for training and prediction will be sent to the ``jubaclassifier`` that started above.
+
+OK, let's try to do it. In the folowing, we mainly use Python for the instruction. Note that they are almost the same for those of other languages, except you need to compile the code for C++ and Java.
+The ``jubaclassifier`` server process must run as a background job, since we also run a client program.
 
 ::
 
@@ -80,105 +80,93 @@ C++やJavaの場合は、ビルドしてから利用してください。
   female 2.79595327377
   male -2.36301612854
 
+Did you get an output like this? You got it!
 
-上記のような出力が出たら成功です。
 
+Client-server architecture
+==========================
 
-サーバー・クライアントモデル
-============================
-
-先のプログラムがどのように動いているのかを通じて、Jubatusの仕組みを解説します。
-Jubatusは最初に実行した ``jubaclassifier`` をはじめとするサーバーと、サンプルプログラムを始めとするクライアントからなります。
-この仕組みのお陰で、C++で書かれたサーバーがデータの前処理から各種機械学習アルゴリズムの適用を担当し、一方ユーザーサイドのクライアントはPythonやJavaなどの複数の言語のものから選択できます。
+We would like to introduce the architecture of Jubatus by explain how the example works.
+Jubatus mainly consists of the server programs for each machine learning tasks such as ``jubaclassifier`` and client programs.
+Thanks to this standard server-client architecture, Jubatus achieves both high perforhamce and usability at the same time.
+Developers can implement all kinds of data pre-processing and machine learning algortihms on server side with C++, and users can choose the language for their client programs from C++, Java, Python or Ruby.
 
 .. figure:: server-client.png
    :width: 800px
 
-   Jubatusサーバーとクライアントの構成。
-
-クライアントとサーバー間の通信は、 *msgpack* というデータシリアライズ形式を使った *msgpack-rpc* を利用しています。
-各言語用のクライアントライブラリは、msgpack-rpcをラップして隠蔽しているため、ユーザーは何の通信プロトコルを利用しているか知る必要はありません。
-クライアントライブラリで用意されているメソッドを呼び出すだけで、自動的に通信を行い、分析結果が得られます。
+   The client-server architecture inside Jubatus.
 
 
-サンプルプログラムを読んでみる
-==============================
+For the communication between servers and clients, we use *msgpack-rpc*, an RPC library based on a format for data seriarlization named *msgpack*.
+Users do not need to realize what kind of protocol is used, since client libraries for each languages mask the underlying communication logics.
+The only thing to do for users is to use the APIs in the client libraries with specifying the setting. Then the client libraries work as a proxy to the server programs, send queries to them, and obtain the results back to users.
 
-ここから自分でプログラムを書けるようにしていきます。
-まず手始めに、サンプルプログラムを読んでみます。
-非常に単純なサンプルです。
 
-ここでは Python のソースをベースに説明します。
-他の言語のサンプルも概ね同じような構造をしています。
+Understand how example works
+============================
+
+You already suceeded in running a Jubatus example.
+Next, I suppose that you want to know how to modify and expoint the example code in your own programs.
+The best way to do it is, as always, to read the example code and understand what it is doing.
+Here we use the Python code for explanation. Again note that the examples of other languages have similar structures.
+
 
 ::
 
    client = jubatus.Classifier(host, port)
 
-最初にclassifierのクライアントオブジェクトを作成します。
-引数に渡しているのは、サーバーのホスト名とポート番号です。
-いずれの言語のライブラリにも、同様なクライアントオブジェクトが存在します。
-Jubatusは常にクライアントオブジェクト経由で利用します。
+First we create a client object.
+The parameters are the host name of the server process and its port number to communicate, reapectively.
+Each client library of Jubatus includes this kind of client object.
+User programs always use any capabilities of Jubatus through this client object.
 
-分類器では、まず学習を行いますが、それに関して簡単に説明します。
-分類器の学習には、「このデータはこの分類がされます」という *教師データ* を与える必要があります。
-教師データは *正解データ* 、 *ラベル付きデータ* と呼ばれることもあります。
-最初の行で用意しているのが、この教師データです。
-教師データを使って、 ``jubaclassifier`` の ``train`` メソッドを呼び出しています。
-``train`` メソッドは、教師データを与えて分類器の構築あるいは更新を行うためのメソッドです。
-概ね内部では、「どのようなデータがどのように分類されるのか」という傾向を学習していることになります。
+We briefly explain the training phase in general machile learning algorithms, since a classifier needs to be trained first.
+For training a classifier, you need to input *training data* , a set of pairs of data samples and their true classes, which describe "this kind of data samples should be classified into this class." for all of the predefined classes.
+Training data is also called as *labeled data* .
+We provide the training data at the first line for tranining, by calling ``train`` method of ``jubaclassifier``.
+This method is to build or update a classifier based on the tranining data.
+The classifier, in general, tries to learn what kind of data is related to each class.
 
-余談ですが ``train`` に渡すデータ構造が複雑なので注意してください。
-これは将来的にはもっと使いやすい形になる予定です。
-``datum`` というクラス（C++なら struct）のインスタンスを作っています。
-以下のようになっているかとおもいます。
+Note that the data structure of the input to ``train`` tends to be complex.
+This issue will be fixed in the future version.
+We make an instance of  ``datum`` class (struct in C++) as follows.
 
 ::
 
   datum([('hair', 'short'), ('top', 'sweater'), ('bottom', 'jeans')], [('height', 1.70)])
 
-ちょっとわかりにくいので、分解して説明します。
-``datum`` は単一の教師データを表します。
-コンストラクタで2つの引き数を取ります。
-1番目が文字列で表現されるデータです。
-2番目が数値で表現されるデータです。
-いずれもリスト形式（C++なら ``std::vector`` ）で渡します。
-各リストは、キーと値のペアの羅列です。
-例えば、 ``('hair', 'short')`` は ``'hair'`` （髪）が ``'short'`` （短髪）である、という風に読んでください。
-同様に、キーと値のペアを追加していってください。
-数値データの方も同様です。
-``('height', 1.70)`` となっていれば、 ``'height'`` （身長）が ``1.70`` である、という意味です。
-ハッシュや辞書などのデータ構造を使ってないのは実装上の問題ですので、使いにくいですがそういうものだと思ってください。
-ここで利用するデータ構造は将来的にもっと使いやすくなる可能性があります。
+We describe this command one-by-one.
+``datum`` object is a training data sample. Its constructor method takes two parameters, one for string-type features and another for numerical-type features.
+Both are represented as lists (``std::vector`` in C++). Each list a set of pairs of keys and values.
+For example, ``('hair', 'short')`` means that ``hair`` of this person is ``short``.
+It is also the same for numerical-type features, as ``('height', 1.70)`` shows that the ``height`` is ``1.70``.
+Note that we do not any collection structure such as hash or dictionary so far, though it might be more useful.
 
-学習のステップが終わったら、その学習済み分類器を使って未分類のデータを自動分類しています。
-``classify`` メソッドは、未分類のデータを分類するためのメソッドです。
-今まで学習したデータの傾向に照らしあわせて、学習された基準によって分類を行います。
-``classify`` メソッドには、 ``datum`` のリストを渡します。
-なお、通信コストを下げるためにリスト形式で一度に複数のデータを渡すようになっています。
+After finishing the training phase, we use the trained classifeir for prediction of the classes of other data samples of which classes are unknown.
+``classify`` method is for classifying new data samples, based on the classification criteria in the classifier,
+You need to input a list of ``datam`` to ``classify`` method.
+For network communication efficiency, you can input multiple new samples at the same time, though the prediction will be independently done.
 
-それぞれの分類結果は ``classification_result`` という型のリスト形式で返ってきます。
-``classification_result`` には ``label`` というメンバ変数と ``score`` というメンバ変数が含まれます。
-前者は予測したラベル、後者はそれに対するスコアを示します。
-スコアが最大のラベルが、システムの予想だと考えてください。
-ソートされて出力されるわけではないので、スコア最大のラベルを探すのは自分でソートする必要があります。
-サンプルでは、システムの返した  ``.label`` と ``.score`` を全て出力してます。
-1つ目のデータは男性を、2つ目のデータは女性を想定していますから、1つ目のデータに対する分類に失敗しています。
+The result of predictions will be given as a list object of ``classification_result`` class.
+``classification_result`` has a set of pairs of member variables, ``label`` and ``score``.
+``label`` corresponds to a class, and ``score`` corresponds to the possiblity tat the data sample belongs to the class.
+The ``label`` with the maximum value for ``score`` is the predicted class of Jubatus.
+Since the list is NOT sorted, you have to sort the result with ``score`` to find the predicted ``label``.
+In the example, we show every pair of ``lbel`` and ``score`` in the standard output.
+In the output shown above, since the first and second data samples are for male and for female, respectively, the prediction was woring with the first one.
 
 .. note::
 
-   生の結果が返ってきますから、スコアが最大のラベルを探すのはユーザー側で行う必要があります。
-   また、スコアは例えば 0 から 1 の間に収まるスコアが出るわけではありません。
-   負になることも、数万になることもありますので注意してください。
+   Since the list is NOT sorted, you have to sort the result with ``score`` to find the predicted ``label``.
+   Though higher score corresponds to higher possibility, the value DO NOT represent the probability, so it can be negative value, or more than 1.0.
+   
 
+Modify example
+==============
 
-サンプルを改造してみる
-======================
-
-サンプルプログラムの改造を通して、使い方の感触を得ましょう。
-一番簡単な改良として、学習データを増やしてみます。
-一般的に、学習データは大量にあったほうが分類精度は良くなります。
-以下のように、学習データを増やしてみます。
+By modifying the example code, you can learn the sense of how to use Jubatus.
+The simplest way is to add more training data as follows.
+In general, more training samples leads to better accuracy in prediction.
 
 ::
 
@@ -195,17 +183,15 @@ Jubatusは常にクライアントオブジェクト経由で利用します。
                        [('height', 1.82)])),
       ('female', datum([('hair', 'long'),  ('top', 'jacket'),  ('bottom', 'skirt')],
                        [('height', 1.43)])),
-      # 下の2行を追加
+      # Adding these two lines
       ('male',   datum([('hair', 'short'), ('top', 'jacket'),  ('bottom', 'jeans')],
                        [('height', 1.76)])),
       ('female', datum([('hair', 'long'),  ('top', 'sweater'), ('bottom', 'skirt')],
                        [('height', 1.52)])),
       ]
 
-もう一度同じようにサンプルを実行してください。
-実験を繰り返すときは、 ``jubaclassifier`` の再起動もしましょう。
-そのまま実行すると、追加学習になります。
-実行すると正しく分類できるようになりました。
+Then, run the experiment again after restarting ``jubaclassifier`` to clear the old classifier.
+This time, we obtain the correct predictions for both test samples.
 
 ::
 
@@ -217,12 +203,12 @@ Jubatusは常にクライアントオブジェクト経由で利用します。
   male -1.01078510284
 
 
-学習データは増やせば増やすほど、基本的には分類精度の向上が期待されます。
-ただし、追加したデータが今までと違う傾向があったりすると、精度が向上するどころか下がることもあるので注意しましょう。
+You might expect that adding samples always improves the classifier performance.
+However, noisy training example can actually decrese accuracy.
 
 
-次に、ラベルを追加してみます。
-今まで"男"と"女"だけの分類でしたが、"男（大人）", "女（大人）", "男（子供）", "女（子供）"の4分類にしてみます。
+Next, we will add another classes for prediction, rather than only two classes, ``male`` and ``female``.
+We define four classes, ``male (child)``, ``male (adult)``, ``female (child)``, and ``female (adult)`` as follows.
 
 ::
 
@@ -245,7 +231,7 @@ Jubatusは常にクライアントオブジェクト経由で利用します。
                              [('height', 1.52)])),
     ]
 
-先程と同様に実行してみましょう。
+Then repreat the experiment again.
 
 ::
 
@@ -260,8 +246,7 @@ Jubatusは常にクライアントオブジェクト経由で利用します。
   male (child) -1.42341578007
   female (adult) -0.188916295767
 
+Note that the accuracy is lower since the classificaiton must be more difficult with more candidate classes.
 
-一般的にラベル数を増やせば増やすほど、見かけ上の精度は下がることに注意しましょう。
-分類の粒度が細かくなればなるほど、正しく当てるのが難しくなるためです。
 
 
