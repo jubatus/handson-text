@@ -152,8 +152,6 @@ For instance, let us assume that the following information is given as input.
    }
 
 
-Note that this JSON format is just for explanation, so Jubatus cannot handle it.
-
 Now, we have to convert it into a numerical vector.
 It used to be represented as a sequence of numerical values, such as (1.5, 2.3, 4.2), but we use a set of pairs of dimension keys and values.
 There would be many other dimensions with zero values, but we assume that they are omitted in this format.

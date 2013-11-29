@@ -22,7 +22,7 @@ Here is the simple command to run it.
   can't start standalone mode without configpath specified
   usage: jubaclassifier [options] ... 
   options:
-  ... [略]
+  ...
 
 Oops, you need to specify an option.
 Run the following command again on your terminal.
@@ -113,10 +113,10 @@ Here we use the Python code for explanation. Again note that the examples of oth
 
 ::
 
-   client = jubatus.Classifier(host, port)
+   client = jubatus.Classifier(host, port, name)
 
 First we create a client object.
-The parameters are the host name of the server process and its port number to communicate, reapectively.
+The parameters are the host name of the server process, its port number to communicate, and the name of jubatus cluster.
 Each client library of Jubatus includes this kind of client object.
 User programs always use any capabilities of Jubatus through this client object.
 
@@ -133,13 +133,15 @@ We make an instance of  ``datum`` class (struct in C++) as follows.
 
 ::
 
-  datum([('hair', 'short'), ('top', 'sweater'), ('bottom', 'jeans')], [('height', 1.70)])
+  datum({'hair': 'short', 'top': 'sweater', 'bottom': 'jeans', 'height': 1.70})
 
 We describe this command one-by-one.
 ``datum`` object is a training data sample. Its constructor method takes two parameters, one for string-type features and another for numerical-type features.
-Both are represented as lists (``std::vector`` in C++). Each list a set of pairs of keys and values.
-For example, ``('hair', 'short')`` means that ``hair`` of this person is ``short``.
-It is also the same for numerical-type features, as ``('height', 1.70)`` shows that the ``height`` is ``1.70``.
+Its constructor takes a map.
+Each key of this map must be a string, and each value must be a string or a number.
+This map is regarded as a mapping from keys to values.
+For example, ``'hair': 'short'`` means that ``hair`` of this person is ``short``.
+It is also the same for numerical-type features, as ``'height': 1.70`` shows that the ``height`` is ``1.70``.
 Note that we do not any collection structure such as hash or dictionary so far, though it might be more useful.
 
 After finishing the training phase, we use the trained classifeir for prediction of the classes of other data samples of which classes are unknown.
@@ -170,25 +172,17 @@ In general, more training samples leads to better accuracy in prediction.
 
 ::
 
-  train_data = [
-      ('male',   datum([('hair', 'short'), ('top', 'sweater'), ('bottom', 'jeans')],
-                       [('height', 1.70)])),
-      ('female', datum([('hair', 'long'),  ('top', 'shirt'),   ('bottom', 'skirt')],
-                       [('height', 1.56)])),
-      ('male',   datum([('hair', 'short'), ('top', 'jacket'),  ('bottom', 'chino')],
-                       [('height', 1.65)])),
-      ('female', datum([('hair', 'short'), ('top', 'T shirt'), ('bottom', 'jeans')],
-                       [('height', 1.72)])),
-      ('male',   datum([('hair', 'long'),  ('top', 'T shirt'), ('bottom', 'jeans')],
-                       [('height', 1.82)])),
-      ('female', datum([('hair', 'long'),  ('top', 'jacket'),  ('bottom', 'skirt')],
-                       [('height', 1.43)])),
-      # Adding these two lines
-      ('male',   datum([('hair', 'short'), ('top', 'jacket'),  ('bottom', 'jeans')],
-                       [('height', 1.76)])),
-      ('female', datum([('hair', 'long'),  ('top', 'sweater'), ('bottom', 'skirt')],
-                       [('height', 1.52)])),
-      ]
+   train_data = [
+       ('male',   Datum({'hair': 'short', 'top': 'sweater', 'bottom': 'jeans', 'height': 1.70})),
+       ('female', Datum({'hair': 'long',  'top': 'shirt',   'bottom': 'skirt', 'height': 1.56})),
+       ('male',   Datum({'hair': 'short', 'top': 'jacket',  'bottom': 'chino', 'height': 1.65})),
+       ('female', Datum({'hair': 'short', 'top': 'T shirt', 'bottom': 'jeans', 'height': 1.72})),
+       ('male',   Datum({'hair': 'long',  'top': 'T shirt', 'bottom': 'jeans', 'height': 1.82})),
+       ('female', Datum({'hair': 'long',  'top': 'jacket',  'bottom': 'skirt', 'height': 1.43})),
+       # Adding these two lines
+       ('male',   Datum({'hair': 'short', 'top': 'jacket',  'bottom': 'jeans', 'height': 1.76})),
+       ('female', Datum({'hair': 'long',  'top': 'sweater', 'bottom': 'skirt', 'height': 1.52})),
+       ]
 
 Then, run the experiment again after restarting ``jubaclassifier`` to clear the old classifier.
 This time, we obtain the correct predictions for both test samples.
@@ -213,22 +207,14 @@ We define four classes, ``male (child)``, ``male (adult)``, ``female (child)``, 
 ::
 
   train_data = [
-    ('male (child)',   datum([('hair', 'short'), ('top', 'sweater'), ('bottom', 'jeans')],
-                             [('height', 1.70)])),
-    ('female (adult)', datum([('hair', 'long'),  ('top', 'shirt'),   ('bottom', 'skirt')],
-                             [('height', 1.56)])),
-    ('male (child)',   datum([('hair', 'short'), ('top', 'jacket'),  ('bottom', 'chino')],
-                             [('height', 1.65)])),
-    ('female (adult)', datum([('hair', 'short'), ('top', 'T shirt'), ('bottom', 'jeans')],
-                             [('height', 1.72)])),
-    ('male (adult)',   datum([('hair', 'long'),  ('top', 'T shirt'), ('bottom', 'jeans')],
-                             [('height', 1.82)])),
-    ('female (child)', datum([('hair', 'long'),  ('top', 'jacket'),  ('bottom', 'skirt')],
-                             [('height', 1.43)])),
-    ('male (adult)',   datum([('hair', 'short'), ('top', 'jacket'),  ('bottom', 'jeans')],
-                             [('height', 1.76)])),
-    ('female (child)', datum([('hair', 'long'),  ('top', 'sweater'), ('bottom', 'skirt')],
-                             [('height', 1.52)])),
+    ('male (child)',   datum({'hair': 'short', 'top': 'sweater', 'bottom': 'jeans', 'height': 1.70}),
+    ('female (adult)', datum({'hair': 'long',  'top': 'shirt',   'bottom': 'skirt', 'height': 1.56}),
+    ('male (child)',   datum({'hair': 'short', 'top': 'jacket',  'bottom': 'chino', 'height': 1.65}),
+    ('female (adult)', datum({'hair': 'short', 'top': 'T shirt', 'bottom': 'jeans', 'height': 1.72}),
+    ('male (adult)',   datum({'hair': 'long',  'top': 'T shirt', 'bottom': 'jeans', 'height': 1.82}),
+    ('female (child)', datum({'hair': 'long',  'top': 'jacket',  'bottom': 'skirt', 'height': 1.43}),
+    ('male (adult)',   datum({'hair': 'short', 'top': 'jacket',  'bottom': 'jeans', 'height': 1.76}),
+    ('female (child)', datum({'hair': 'long',  'top': 'sweater', 'bottom': 'skirt', 'height': 1.52}),
     ]
 
 Then repreat the experiment again.
