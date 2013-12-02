@@ -42,12 +42,12 @@ Jubatusの各サーバーの起動には、設定ファイルを指定する必�
 設定に関しては、次の章で解説します。
 上記のコマンドでエラーが表示されなければjubaclassifierが起動しています。
 
-起動しなかった場合は、別のプロセスが同じポートを利用している可能性があります。
+起動しなかった場合は、別のプロセスが ``jubaclassifier`` のデフォルトポート9199を利用している可能性があります。
 利用するポートを変えるときは、 ``-p`` オプションを指定します。
 
 ::
 
-  $ jubaclassifier -f /opt/jubatus/share/jubatus/example/config/classifier/pa1.json -p 9199
+  $ jubaclassifier -f /opt/jubatus/share/jubatus/example/config/classifier/pa1.json -p 19199
 
 ``jubaclassifier`` は学習や予測のクエリ（リクエスト）を受け取るまで、起動した状態で待機します。
 
@@ -113,10 +113,10 @@ Jubatusは最初に実行した ``jubaclassifier`` をはじめとするサー�
 
 ::
 
-   client = jubatus.Classifier(host, port)
+   client = jubatus.Classifier(host, port, name)
 
 最初にclassifierのクライアントオブジェクトを作成します。
-引数に渡しているのは、サーバーのホスト名とポート番号です。
+引数に渡しているのは、サーバーのホスト名とポート番号、それからJubatusのクラスター名です。
 いずれの言語のライブラリにも、同様なクライアントオブジェクトが存在します。
 Jubatusは常にクライアントオブジェクト経由で利用します。
 
@@ -135,21 +135,18 @@ Jubatusは常にクライアントオブジェクト経由で利用します。
 
 ::
 
-  datum([('hair', 'short'), ('top', 'sweater'), ('bottom', 'jeans')], [('height', 1.70)])
+  datum({'hair': 'short', 'top': 'sweater', 'bottom': 'jeans', 'height': 1.70})
 
 ちょっとわかりにくいので、分解して説明します。
 ``datum`` は単一の教師データを表します。
-コンストラクタで2つの引き数を取ります。
-1番目が文字列で表現されるデータです。
-2番目が数値で表現されるデータです。
-いずれもリスト形式（C++なら ``std::vector`` ）で渡します。
-各リストは、キーと値のペアの羅列です。
-例えば、 ``('hair', 'short')`` は ``'hair'`` （髪）が ``'short'`` （短髪）である、という風に読んでください。
-同様に、キーと値のペアを追加していってください。
-数値データの方も同様です。
-``('height', 1.70)`` となっていれば、 ``'height'`` （身長）が ``1.70`` である、という意味です。
-ハッシュや辞書などのデータ構造を使ってないのは実装上の問題ですので、使いにくいですがそういうものだと思ってください。
-ここで利用するデータ構造は将来的にもっと使いやすくなる可能性があります。
+コンストラクタで1つのマップを渡します。
+キーは必ず文字列で、値には文字列か数値を指定できます。
+キーと値のマッピングとして解釈されます。
+例えば、 ``'hair': 'short'`` は ``'hair'`` （髪）が ``'short'`` （短髪）である、という風に読んでください。
+``'height': 1.70`` となっていれば、 ``'height'`` （身長）が ``1.70`` である、という意味です。
+PythonやRubyなど、マップ形式のデータ構造を記述しやすい言語では、マップ型で指定できますが、C++やJavaでは難しいです。
+そのため、メソッドを利用してこのデータ構造を構築します。
+具体的にはそれぞれのソースを参照して下さい。
 
 学習のステップが終わったら、その学習済み分類器を使って未分類のデータを自動分類しています。
 ``classify`` メソッドは、未分類のデータを分類するためのメソッドです。
@@ -182,25 +179,17 @@ Jubatusは常にクライアントオブジェクト経由で利用します。
 
 ::
 
-  train_data = [
-      ('male',   datum([('hair', 'short'), ('top', 'sweater'), ('bottom', 'jeans')],
-                       [('height', 1.70)])),
-      ('female', datum([('hair', 'long'),  ('top', 'shirt'),   ('bottom', 'skirt')],
-                       [('height', 1.56)])),
-      ('male',   datum([('hair', 'short'), ('top', 'jacket'),  ('bottom', 'chino')],
-                       [('height', 1.65)])),
-      ('female', datum([('hair', 'short'), ('top', 'T shirt'), ('bottom', 'jeans')],
-                       [('height', 1.72)])),
-      ('male',   datum([('hair', 'long'),  ('top', 'T shirt'), ('bottom', 'jeans')],
-                       [('height', 1.82)])),
-      ('female', datum([('hair', 'long'),  ('top', 'jacket'),  ('bottom', 'skirt')],
-                       [('height', 1.43)])),
-      # 下の2行を追加
-      ('male',   datum([('hair', 'short'), ('top', 'jacket'),  ('bottom', 'jeans')],
-                       [('height', 1.76)])),
-      ('female', datum([('hair', 'long'),  ('top', 'sweater'), ('bottom', 'skirt')],
-                       [('height', 1.52)])),
-      ]
+   train_data = [
+       ('male',   Datum({'hair': 'short', 'top': 'sweater', 'bottom': 'jeans', 'height': 1.70})),
+       ('female', Datum({'hair': 'long',  'top': 'shirt',   'bottom': 'skirt', 'height': 1.56})),
+       ('male',   Datum({'hair': 'short', 'top': 'jacket',  'bottom': 'chino', 'height': 1.65})),
+       ('female', Datum({'hair': 'short', 'top': 'T shirt', 'bottom': 'jeans', 'height': 1.72})),
+       ('male',   Datum({'hair': 'long',  'top': 'T shirt', 'bottom': 'jeans', 'height': 1.82})),
+       ('female', Datum({'hair': 'long',  'top': 'jacket',  'bottom': 'skirt', 'height': 1.43})),
+       # 下の2行を追加
+       ('male',   Datum({'hair': 'short', 'top': 'jacket',  'bottom': 'jeans', 'height': 1.76})),
+       ('female', Datum({'hair': 'long',  'top': 'sweater', 'bottom': 'skirt', 'height': 1.52})),
+       ]
 
 もう一度同じようにサンプルを実行してください。
 実験を繰り返すときは、 ``jubaclassifier`` の再起動もしましょう。
@@ -227,22 +216,14 @@ Jubatusは常にクライアントオブジェクト経由で利用します。
 ::
 
   train_data = [
-    ('male (child)',   datum([('hair', 'short'), ('top', 'sweater'), ('bottom', 'jeans')],
-                             [('height', 1.70)])),
-    ('female (adult)', datum([('hair', 'long'),  ('top', 'shirt'),   ('bottom', 'skirt')],
-                             [('height', 1.56)])),
-    ('male (child)',   datum([('hair', 'short'), ('top', 'jacket'),  ('bottom', 'chino')],
-                             [('height', 1.65)])),
-    ('female (adult)', datum([('hair', 'short'), ('top', 'T shirt'), ('bottom', 'jeans')],
-                             [('height', 1.72)])),
-    ('male (adult)',   datum([('hair', 'long'),  ('top', 'T shirt'), ('bottom', 'jeans')],
-                             [('height', 1.82)])),
-    ('female (child)', datum([('hair', 'long'),  ('top', 'jacket'),  ('bottom', 'skirt')],
-                             [('height', 1.43)])),
-    ('male (adult)',   datum([('hair', 'short'), ('top', 'jacket'),  ('bottom', 'jeans')],
-                             [('height', 1.76)])),
-    ('female (child)', datum([('hair', 'long'),  ('top', 'sweater'), ('bottom', 'skirt')],
-                             [('height', 1.52)])),
+    ('male (child)',   datum({'hair': 'short', 'top': 'sweater', 'bottom': 'jeans', 'height': 1.70}),
+    ('female (adult)', datum({'hair': 'long',  'top': 'shirt',   'bottom': 'skirt', 'height': 1.56}),
+    ('male (child)',   datum({'hair': 'short', 'top': 'jacket',  'bottom': 'chino', 'height': 1.65}),
+    ('female (adult)', datum({'hair': 'short', 'top': 'T shirt', 'bottom': 'jeans', 'height': 1.72}),
+    ('male (adult)',   datum({'hair': 'long',  'top': 'T shirt', 'bottom': 'jeans', 'height': 1.82}),
+    ('female (child)', datum({'hair': 'long',  'top': 'jacket',  'bottom': 'skirt', 'height': 1.43}),
+    ('male (adult)',   datum({'hair': 'short', 'top': 'jacket',  'bottom': 'jeans', 'height': 1.76}),
+    ('female (child)', datum({'hair': 'long',  'top': 'sweater', 'bottom': 'skirt', 'height': 1.52}),
     ]
 
 先程と同様に実行してみましょう。
