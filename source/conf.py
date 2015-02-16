@@ -214,7 +214,7 @@ latex_documents = [
 # (source start file, name, description, authors, manual section).
 man_pages = [
     ('index', 'jubatus-handson', u'jubatus-handson Documentation',
-     [u'Preferred Infrastructure'], 1)
+     [u'Preferred Networks'], 1)
 ]
 
 # If true, show URL addresses after external links.
@@ -228,7 +228,7 @@ man_pages = [
 #  dir menu entry, description, category)
 texinfo_documents = [
   ('index', 'jubatus-handson', u'jubatus-handson Documentation',
-   u'Preferred Infrastructure', 'jubatus-handson', 'One line description of project.',
+   u'Preferred Networks', 'jubatus-handson', 'One line description of project.',
    'Miscellaneous'),
 ]
 
