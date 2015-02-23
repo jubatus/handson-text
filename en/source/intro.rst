@@ -48,7 +48,7 @@ The purpose of this tutorial is to learn how to use the Jubatus' classifier (jub
 What is Jubatus?
 ================
 
-Jubatus is an open source software platform for machine learning, which were originally developed by NTT SIC and Preferred Infrastructure, Inc.
+Jubatus is an open source software platform for machine learning, which were originally developed by NTT SIC and Preferred Networks, Inc.
 Not only classification, it also supports other machine learning tasks such as regression, recommendation, and anomaly detection.
 
 The main advantage is that Jubatus can work in a distributed environment.
