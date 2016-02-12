@@ -8,7 +8,7 @@
 
 This article is a hands-on introduction to running Jubatus.
 We will explain how to start Jubatus, how it works, and how to chage the configuration.
-This article is written based on Jubatus version 0.5.0.
+This article is written based on Jubatus version 0.8.7.
 Note that if you use a different version, APIs might be slightly changed.
 
 .. toctree::

@@ -136,10 +136,10 @@ Default configuration
 For making it easier to understand how to change, we will explain what kind of configuration is used in ``jubaclassifier``, by going through the default configuration settings.
 
 
-Speaking of input data to Jubatus, though Jubatus is originally designed for handling any kinds of raw unstructured data, currently only two types, symbol sequences such as strings, and numeric values such as sensor data, are supported.
-These values correspond to the two list given to a ``datum`` object.
+Speaking of input data to Jubatus, though Jubatus is originally designed for handling any kinds of raw unstructured data, currently only three types, symbol sequences such as strings, numeric values such as sensor data, and binary values such as images, are supported.
 They will be separately processed in the following feature value extraction.
 
+In this example, we will see feature extractions for string and numerical values.
 For instance, let us assume that the following information is given as input.
 
 ::
